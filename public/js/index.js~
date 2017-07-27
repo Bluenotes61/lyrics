@@ -1,0 +1,200 @@
+var windowHeight = 0;
+var currsel = 0;
+var texts = [];
+
+
+$(document).ready(function(){
+  readAllTexts(function(){
+    windowHeight = $(document).height() - 80;
+    var windowWidth = $(document).width();
+    var colwidth = (windowWidth - 40 - 30)/2;
+
+    var songs = "";
+    for (var i=0; i < texts.length; i++) {
+      songs += "<a href='javascript:void(0)' id='s" + i + "' onclick='itemClicked(this)' onfocus='isFocused(this)'>" + texts[i].title + "</a>";
+    }
+
+    var nofcols = Math.floor(windowWidth/200);
+    $("#selectarea").css("width", windowWidth-40);
+    $("#songs").html(songs).tabulate({
+      nofcols:nofcols,
+      colmargin:10
+    });
+
+    var nofrows = $("#songs div:first-child").children("a").length;
+
+    $("body").keyup(function(e){
+      if (e.keyCode == 40 && currsel < texts.length - 1) {
+        currsel++;
+        $("#s" + currsel).focus();
+      }
+      else if (e.keyCode == 38 && currsel > 0) {
+        currsel--;
+        $("#s" + currsel).focus();
+      }
+      else if (e.keyCode == 37 && currsel > nofrows) {
+        currsel -= nofrows;
+        $("#s" + currsel).focus();
+      }
+      else if (e.keyCode == 39 && currsel < texts.length - nofrows - 1) {
+        currsel += nofrows;
+        $("#s" + currsel).focus();
+      }
+      else if (e.keyCode == 13) {
+alert("1");
+        showText();
+        e.stopPropagation();
+      }
+    });
+
+    $("#textarea").keyup(function(e){
+      if (e.keyCode == 13) 
+alert("222");{
+        $("#textarea").fadeOut();
+        $("#selectarea").fadeIn();
+      }
+    });
+
+    $("#s0").focus();
+
+  });
+});
+
+function isFocused(a) {
+  currsel = parseInt($(a).attr("id").substring(1));
+}
+
+function itemClicked(a) {
+  currsel = parseInt($(a).attr("id").substring(1));
+  showText();
+}
+
+function showText() {
+  setText(texts[currsel].text);
+  //textWindow.setText(texts[currsel].text);
+}
+
+function readAllTexts(callback) {
+  readTextFile('/texter.txt', function(txt){
+    var songs = txt.split('\r\n').sort();
+    getOneText(texts, songs, 0, callback);
+  });
+}
+
+
+function getOneText(texts, songs, idx, callback) {
+  if (idx < songs.length && songs[idx].length > 0) {
+    readTextFile('/texter/' + songs[idx] + '.txt', function(atext){
+      texts.push(formatSongText(atext));
+      idx++;
+      getOneText(texts, songs, idx, callback);
+    });
+  }
+  else if (idx < songs.length) {
+    idx++;
+    getOneText(texts, songs, idx, callback);
+  }
+  else 
+    callback();
+}
+
+function readTextFile(file, callback) {
+  try {
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function () {
+      if ((rawFile.readyState === 4) && (rawFile.status === 200 || rawFile.status == 0))
+        callback(rawFile.responseText);
+      else
+        callback("");
+    }
+    rawFile.send();
+  }
+  catch(e) {
+    callback(e);
+  }
+}
+
+function formatSongText(atext) {
+  var response = {title:"", text:""};
+  var lines = atext.split('\r\n');
+  for (var i=0; i < lines.length; i++) {
+    lines[i] = lines[i].replace(/\"/g, '\'');
+    if (lines[i].length == 0) lines[i] = "&nbsp;";
+    if (response.text.length == 0) {
+      response.title = lines[i];
+      response.text = "<h2>" + lines[i] + "</h2>";
+    }
+    else 
+      response.text += "<p>" + lines[i] + "</p>";
+  }
+  return response;
+}
+
+
+function setText(atext) {
+  var headHeight = $("#textarea h2").outerHeight();
+  $("#selectarea, #textarea").fadeOut(500, function(){
+    $("#testtextarea").html(atext);
+    $("#textarea").css({"display":"block", "visibility":"hidden"});
+    
+    $("#textarea .col1, #textarea .col2, #textarea .col3").empty();
+    $("#textarea h2").text($("#testtextarea h2").text());
+    $("#testtextarea h2").remove();
+    if ($("#testtextarea p:first-child").text().trim().length == 0)
+      $("#testtextarea p:first-child").remove();
+
+    var textHeight = $(window).height() - 40 - headHeight;
+    var nofcols = getNofCols(textHeight);
+    var pHeight = $("#testtextarea p:first-child").innerHeight();
+
+    $("#testtextarea p").each(function(){
+      if ($("#textarea .col1").innerHeight() > textHeight - 20 - pHeight) {
+        if ($("#textarea .col2").innerHeight() > textHeight - 20 - pHeight) {
+          $("#textarea .col3").append($(this));  
+        }
+        else {
+          $("#textarea .col2").append($(this));  
+        }
+      }
+      else {
+        $("#textarea .col1").append($(this));
+      }
+    });
+
+    $("#textarea").css({"display":"none", "visibility":"visible"});
+    $("#textarea").fadeIn();
+  });
+}
+
+function getNofCols(textHeight) {
+  var nofcols = 1;
+  if (!setTextSize(nofcols, textHeight)) {
+    nofcols = 2;
+    if (!setTextSize(nofcols, textHeight)) {
+      nofcols = 3;
+      setTextSize(nofcols, textHeight);
+    }
+  }
+  if (nofcols < 3) $("#textarea .col3").css({"margin-left":0, "display":"none"});
+  if (nofcols < 2) $("#textarea .col2").css({"margin-left":0, "display":"none"});
+  return nofcols;
+}
+
+function setTextSize(nofcols, textHeight) {
+  var minsize = (nofcols == 1 ? 34 : (nofcols == 2 ? 26 : 18));
+  var colwidth = 100/nofcols - (2*(nofcols-1));
+  $("#testtextarea, #textarea .col1, #textarea .col2, #textarea .col3").css("width", colwidth + "%");
+  $("#textarea .col2, #textarea .col3").css({"margin-left": "2%", "display":"block"});
+
+  var fsize = 50;
+  $("p").css({"font-size":fsize + "px"});
+  $("h2").css({"font-size":(fsize*1.2) + "px"});
+  while (fsize > minsize && $("#testtextarea").innerHeight() > nofcols*textHeight - 40) {
+    fsize--;
+    $("p").css({"font-size":fsize + "px"});
+    $("h2").css({"font-size":(fsize*1.2) + "px"});
+  }
+  if (fsize > minsize) return true;
+  else return false;
+}

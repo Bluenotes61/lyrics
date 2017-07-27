@@ -1,0 +1,74 @@
+html, body {
+  margin:0;
+  padding:0;
+}
+
+body {
+  background: #fff;
+  font-family: Verdana, Arial, "Arial Regular", Helvetica, sans-serif;
+  font-size: 24px;
+  line-height: 24px;
+  font-weight:normal;
+  color:#000;
+  margin:0;
+  padding:20px;
+}
+
+h1 {
+  font-size:28px;
+  font-weight:bold;
+  margin: 0 0 20px 0;
+}
+h2 {
+  font-size:28px;
+  font-weight:bold;
+  margin: 0;
+  line-height: 150%;
+  padding-bottom:10px;
+}
+
+p {
+  margin:0;
+  font-size: 28px;
+  line-height: 140%;
+}
+a {
+  outline:none;
+}
+.clearfloat {
+  clear:both;
+  height:0;
+  overflow:hidden;
+}
+.clearfix:after {
+   content: " ";
+   visibility: hidden;
+   display: block;
+   height: 0;
+   clear: both;
+}
+#testtextarea {
+  visibility: hidden;
+}
+
+#textarea .col1, #textarea .col2, #textarea .col3 {
+  float:left;
+}
+
+#selectarea {
+  position:absolute;
+  background:#fff;
+  font-size:14px;
+  line-height:110%;
+}
+#songs a {
+  display:block;
+  border:solid 1px #e0e0e0;
+  padding:4px;
+  color:#000;
+  text-decoration:none;
+}
+#songs a:focus {
+  background-color:#333;
+  color:#fff;
+}
