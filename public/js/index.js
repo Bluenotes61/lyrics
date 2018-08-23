@@ -2,6 +2,7 @@ var windowHeight = 0;
 var currsel = 0;
 var texts = [];
 var margin = 80;
+var allowScroll = true;
 
 $(document).ready(function(){
   readAllTexts().then(function(){
@@ -74,7 +75,6 @@ function isFocused(a) {
 }
 
 function itemClicked(a) {
-console.log(clicked);
   currsel = parseInt($(a).attr("id").substring(1));
 }
 
@@ -182,15 +182,20 @@ function setText(atext) {
 
 function getNofCols(textHeight) {
   var nofcols = 1;
-  if (!setTextSize(nofcols, textHeight)) {
-    nofcols = 2;
+  if (!allowScroll) {
     if (!setTextSize(nofcols, textHeight)) {
-      nofcols = 3;
-      setTextSize(nofcols, textHeight);
+      nofcols = 2;
+      if (!setTextSize(nofcols, textHeight)) {
+        nofcols = 3;
+        setTextSize(nofcols, textHeight);
+      }
     }
+    if (nofcols < 3) $("#textarea .col3").css({"margin-left":0, "display":"none"});
+    if (nofcols < 2) $("#textarea .col2").css({"margin-left":0, "display":"none"});
   }
-  if (nofcols < 3) $("#textarea .col3").css({"margin-left":0, "display":"none"});
-  if (nofcols < 2) $("#textarea .col2").css({"margin-left":0, "display":"none"});
+  else {
+    //setTextSize(nofcols, textHeight);
+  }
   return nofcols;
 }
 
