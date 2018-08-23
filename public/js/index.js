@@ -14,6 +14,8 @@ $(document).ready(function(){
       songs += "<a href='javascript:void(0)' id='s" + i + "' class='onesong'>" + texts[i].title + "</a>";
     }
 
+    $("#selectarea h1").fadeOut();
+
     var nofcols = Math.floor(windowWidth/300);
     $("#selectarea").css("width", windowWidth-40);
     $("#songs").html(songs).tabulate({
