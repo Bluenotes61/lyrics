@@ -1,70 +1,62 @@
 /* global $, Q, XMLHttpRequest */
 
-// var windowHeight = 0
 var currsel = 0
-var texts = []
 var margin = 80
-var allowScroll = true
+var fitScreen = false
 
 $(document).ready(function () {
-  readAllTexts().then(function () {
-    // windowHeight = $(document).height() - 80
-    var windowWidth = $(document).width()
-    // var colwidth = (windowWidth - 40 - 30) / 2
+  var windowWidth = $(document).width()
 
-    var songs = ''
-    for (var i = 0; i < texts.length; i++) {
-      songs += '<a href="javascript:void(0)" id="s' + i + '" class="onesong">' + texts[i].title + '</a>'
-    }
+  var songs = ''
+  for (var i = 0; i < lyrics.length; i++) {
+    songs += '<a href="javascript:void(0)" id="s' + i + '" class="onesong">' + lyrics[i].title + '</a>'
+  }
 
-    $('#selectarea h1').fadeOut()
+  var nofcols = Math.floor(windowWidth / 300)
+  $('#selectarea').css('width', windowWidth - 40)
+  $('#songs').html(songs).tabulate({
+    nofcols: nofcols,
+    colmargin: 10
+  })
+  $('#songs .onesong').click(function () {
+    currsel = parseInt($(this).attr('id').substring(1))
+    showText()
+  })
+  $('#songs .onesong').focus(function () {
+    currsel = parseInt($(this).attr('id').substring(1))
+  })
 
-    var nofcols = Math.floor(windowWidth / 300)
-    $('#selectarea').css('width', windowWidth - 40)
-    $('#songs').html(songs).tabulate({
-      nofcols: nofcols,
-      colmargin: 10
-    })
-    $('#songs .onesong').click(function () {
-      currsel = parseInt($(this).attr('id').substring(1))
-      showText()
-    })
-    $('#songs .onesong').focus(function () {
-      currsel = parseInt($(this).attr('id').substring(1))
-    })
+  var nofrows = $('#songs div:first-child').children('a').length
 
-    var nofrows = $('#songs div:first-child').children('a').length
-
-    $('body').keyup(function (e) {
-      if ($('#selectarea').is(':visible')) {
-        if (e.keyCode === 40 && currsel < texts.length - 1) {
-          currsel++
-          $('#s' + currsel).focus()
-        } else if (e.keyCode === 38 && currsel > 0) {
-          currsel--
-          $('#s' + currsel).focus()
-        } else if (e.keyCode === 37 && currsel > nofrows) {
-          currsel -= nofrows
-          $('#s' + currsel).focus()
-        } else if (e.keyCode === 39 && currsel < texts.length - nofrows - 1) {
-          currsel += nofrows
-          $('#s' + currsel).focus()
-        }
-      } else if (e.keyCode === 13 || e.keyCode === 27) {
-        $('#textarea').fadeOut()
-        $('#selectarea').fadeIn()
+  $('body').keyup(function (e) {
+    if ($('#selectarea').is(':visible')) {
+      if (e.keyCode === 40 && currsel < texts.length - 1) {
+        currsel++
+        $('#s' + currsel).focus()
+      } else if (e.keyCode === 38 && currsel > 0) {
+        currsel--
+        $('#s' + currsel).focus()
+      } else if (e.keyCode === 37 && currsel > nofrows) {
+        currsel -= nofrows
+        $('#s' + currsel).focus()
+      } else if (e.keyCode === 39 && currsel < texts.length - nofrows - 1) {
+        currsel += nofrows
         $('#s' + currsel).focus()
       }
-    })
-
-    $('#textarea').click(function () {
+    } else if (e.keyCode === 13 || e.keyCode === 27) {
       $('#textarea').fadeOut()
       $('#selectarea').fadeIn()
       $('#s' + currsel).focus()
-    })
-
-    $('#s0').focus()
+    }
   })
+
+  $('#textarea').click(function () {
+    $('#textarea').fadeOut()
+    $('#selectarea').fadeIn()
+    $('#s' + currsel).focus()
+  })
+
+  $('#s0').focus()
 })
 
 function isFocused (a) {
@@ -76,144 +68,78 @@ function itemClicked (a) {
 }
 
 function showText () {
-  setText(texts[currsel].text)
+  setText(lyrics[currsel])
 }
 
-function readAllTexts () {
-  return readTextFile('/texter.txt').then(function (txt) {
-    var songs = txt.split('\n')
-    var promises = []
-    for (var i = 0; i < songs.length; i++) {
-      promises.push(getOneText(songs[i]))
-    }
-    return Q.all(promises)
-  }).then(function () {
-    texts.sort(function (a, b) {
-      return (a.title > b.title ? 1 : -1)
-    })
-  })
-}
-
-function getOneText (song) {
-  return readTextFile('/texter/' + song + '.txt').then(
-    function (txt) {
-      var atext = formatSongText(txt)
-      if (atext.title && atext.title.length > 0) {
-        texts.push(atext)
-      }
-    },
-    function (err) {
-      console.log(err)
-    }
-  )
-}
-
-function readTextFile (file) {
-  var d = Q.defer()
-  try {
-    var rawFile = new XMLHttpRequest()
-    rawFile.open('GET', file, false)
-    rawFile.onreadystatechange = function () {
-      if ((rawFile.readyState === 4) && (rawFile.status === 200 || rawFile.status === 0)) {
-        d.resolve(rawFile.responseText)
-      } else {
-        d.reject('Error1 reading ' + file)
-      }
-    }
-    rawFile.send()
-  } catch (e) {
-    d.reject(e)
-  }
-  return d.promise
-}
-
-function formatSongText (atext) {
-  var response = { title: '', text: '' }
-  var lines = atext.split('\r\n')
-  for (var i = 0; i < lines.length; i++) {
-    lines[i] = lines[i].replace(/"/g, '\'')
-    if (lines[i].length === 0) lines[i] = '&nbsp'
-    if (response.text.length === 0) {
-      response.title = lines[i]
-      response.text = '<h2>' + lines[i] + '</h2>'
-    } else {
-      response.text += '<p>' + lines[i] + '</p>'
-    }
-  }
-  return response
-}
-
-function setText (atext) {
-  var headHeight = $('#textarea h2').outerHeight()
+function setText (alyric) {
+  var windowWidth = $(document).width()
+  let nofCols = 3
+  if (windowWidth < 1000) { nofCols = 2 }
+  if (windowWidth < 500) { nofCols = 1 }
+  
   $('#selectarea, #textarea').fadeOut(500, function () {
-    $('#testtextarea').html(atext)
-    $('#textarea').css({ display: 'block', visibility: 'hidden' })
+    let fontSize = 40
+    setFontSize(fontSize)
 
-    $('#textarea .col1, #textarea .col2, #textarea .col3').empty()
-    $('#textarea h2').text($('#testtextarea h2').text())
-    $('#testtextarea h2').remove()
-    if ($('#testtextarea p:first-child').text().trim().length === 0) {
-      $('#testtextarea p:first-child').remove()
+    $('#testtextarea').empty().show()
+    $('#testtextarea').append('<h2>Title</h2>')
+    
+    let linesPerCol = 0;
+    if (fitScreen) {
+      linesPerCol = Math.floor(alyric.lines.length / nofCols)
+    } else {
+      while (!isOverflow('#testtextarea') && linesPerCol < 100) {
+        $('#testtextarea').append('<p>A line</p>')
+        linesPerCol++
+      }
+      if (linesPerCol * nofCols < alyric.lines.length) {
+        linesPerCol = Math.floor(alyric.lines.length / nofCols)
+      }
+    }
+    $('#testtextarea').hide()
+
+    $('#textarea .title, #textarea .col1, #textarea .col2, #textarea .col3').empty()
+    $('#textarea .title').text(alyric.title)
+
+    let lineCount = 0
+    for (let col = 1; col <= nofCols; col++) {
+      for (let i = 0; i < linesPerCol; i++) {
+        if (lineCount < alyric.lines.length && (i > 0 || alyric.lines[lineCount].length > 0)) {
+          addLine(col, alyric.lines[lineCount])
+        }
+        lineCount++
+      }
+    }
+    for (let line = lineCount; line < alyric.lines.length; line++) {
+      addLine(nofCols, alyric.lines[line])
     }
 
-    var textHeight = $(window).height() - margin - headHeight
-    // var nofcols = getNofCols(textHeight)
-    var pHeight = $('#testtextarea p:first-child').innerHeight()
+    if ($('#textarea .col3').text().length === 0) { nofCols = 2 }
+    if ($('#textarea .col2').text().length === 0) { nofCols = 1 }
+    const colWidth = 90 / nofCols
+    $('.col').css({ 'max-width': colWidth + '%' })
 
-    $('#testtextarea p').each(function () {
-      if ($('#textarea .col1').innerHeight() > textHeight - margin / 2 - pHeight) {
-        if ($('#textarea .col2').innerHeight() > textHeight - margin / 2 - pHeight) {
-          $('#textarea .col3').append($(this))
-        } else {
-          $('#textarea .col2').append($(this))
-        }
-      } else {
-        $('#textarea .col1').append($(this))
+    if (fitScreen) {
+      while (isOverflow('#textarea') && fontSize > 5) {
+        fontSize--
+        setFontSize(fontSize)
       }
-    })
-
+    }
+ 
     $('#textarea').css({ display: 'none', visibility: 'visible' })
     $('#textarea').fadeIn()
   })
 }
 
-function getNofCols (textHeight) {
-  var nofcols = 1
-  if (!allowScroll) {
-    if (!setTextSize(nofcols, textHeight)) {
-      nofcols = 2
-      if (!setTextSize(nofcols, textHeight)) {
-        nofcols = 3
-        setTextSize(nofcols, textHeight)
-      }
-    }
-    if (nofcols < 3) $('#textarea .col3').css({ 'margin-left': 0, display: 'none' })
-    if (nofcols < 2) $('#textarea .col2').css({ 'margin-left': 0, display: 'none' })
-  } else {
-    // setTextSize(nofcols, textHeight)
-  }
-  return nofcols
+function isOverflow (area) {
+  return $(area).height() > 0.90 * $(window).height()
 }
 
-function setTextSize (nofcols, textHeight) {
-  var colwidth = 100 / nofcols - (2 * (nofcols - 1))
-  $('#testtextarea, #textarea .col1, #textarea .col2, #textarea .col3').css('width', colwidth + '%')
-  $('#textarea .col2, #textarea .col3').css({ 'margin-left': '2%', display: 'block' })
-  var minsize = getMinSize(nofcols)
-
-  var fsize = 40
-  $('p').css({ 'font-size': fsize + 'px' })
-  $('h2').css({ 'font-size': (fsize * 1.2) + 'px' })
-  while (fsize > minsize && $('#testtextarea').innerHeight() > nofcols * textHeight - margin) {
-    fsize--
-    $('p').css({ 'font-size': fsize + 'px' })
-    $('h2').css({ 'font-size': (fsize * 1.2) + 'px' })
-  }
-  if (fsize > minsize) return true
-  else return false
+function addLine(col, line) {
+  if (line.length === 0) { line = '&nbsp;' }
+  $('#textarea .col' + col).append('<p>' + line + '</p>')
 }
 
-function getMinSize (nofcols) {
-  var w = $('#textarea').innerWidth()
-  return (nofcols === 1 ? w / 40 : (nofcols === 2 ? w / 60 : w / 80))
+function setFontSize (size) {
+  $('p').css({ 'font-size': size + 'px' })
 }

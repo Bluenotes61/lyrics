@@ -1,29 +1,30 @@
+/* global __dirname */
+
 /**
  * Start module for the application
- */  
-                                      
-var express = require('express');
-var swig = require('swig');
-var path = require('path');  
-var config = require("./config.js");  
+ */
+const express = require('express')
+const swig = require('swig')
+const path = require('path')
+const config = require('./config.js')
+const routes = require('./routes/index.js')
 
-var app = express();     
-  
-var server = app.listen(config.serverport, function() {
-  console.log('Listening on port %d', server.address().port);
-});      
+const app = express()
 
-global.appRoot = path.resolve(__dirname);
+const server = app.listen(config.serverport, function () {
+  console.log('Listening on port %d', server.address().port)
+})
 
-app.engine("html", swig.renderFile);
-app.set('view engine', 'html');
-app.set('views', __dirname + '/routes');  
-app.use("/", express.static(__dirname + '/public'));
+global.appRoot = path.resolve(__dirname)
 
-app.get("/", function(req, res){
-  res.render("index");
-});
+swig.setDefaults({
+  autoescape: false
+})
+app.engine('html', swig.renderFile)
+app.set('view engine', 'html')
+app.set('views', path.join(__dirname, 'routes'))
+app.use('/', express.static(path.join(__dirname, 'public')))
 
-app.get("/onetext", function(req, res){
-  res.render("onetext");
-});
+app.get('/', function (req, res) {
+  routes.index(req, res)
+})
