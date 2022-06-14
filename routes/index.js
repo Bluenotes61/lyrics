@@ -2,11 +2,11 @@ const fs = require('fs')
 
 exports.index = function (req, res, next) {
   const lyrics = []
-  fs.readdir('./lyrics', function (err, files) {
+  fs.readdir('./songs', function (err, files) {
     if (err) { return console.log('Unable to scan directory: ' + err) }
     let count = 0
     for (const fileName of files) {
-      fs.readFile(`./lyrics/${fileName}`, 'utf8', (err, data) => {
+      fs.readFile(`./songs/${fileName}`, 'utf8', (err, data) => {
         count++
         if (err) {
           console.error(err);
