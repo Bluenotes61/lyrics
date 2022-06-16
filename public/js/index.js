@@ -1,7 +1,6 @@
-/* global $, Q, XMLHttpRequest */
+/* global $, lyrics */
 
 var currsel = 0
-var margin = 80
 var fitScreen = false
 
 $(document).ready(function () {
@@ -30,7 +29,7 @@ $(document).ready(function () {
 
   $('body').keyup(function (e) {
     if ($('#selectarea').is(':visible')) {
-      if (e.keyCode === 40 && currsel < texts.length - 1) {
+      if (e.keyCode === 40 && currsel < lyrics.length - 1) {
         currsel++
         $('#s' + currsel).focus()
       } else if (e.keyCode === 38 && currsel > 0) {
@@ -39,7 +38,7 @@ $(document).ready(function () {
       } else if (e.keyCode === 37 && currsel > nofrows) {
         currsel -= nofrows
         $('#s' + currsel).focus()
-      } else if (e.keyCode === 39 && currsel < texts.length - nofrows - 1) {
+      } else if (e.keyCode === 39 && currsel < lyrics.length - nofrows - 1) {
         currsel += nofrows
         $('#s' + currsel).focus()
       }
@@ -76,15 +75,15 @@ function setText (alyric) {
   let nofCols = 3
   if (windowWidth < 1000) { nofCols = 2 }
   if (windowWidth < 500) { nofCols = 1 }
-  
+
   $('#selectarea, #textarea').fadeOut(500, function () {
     let fontSize = 40
     setFontSize(fontSize)
 
     $('#testtextarea').empty().show()
     $('#testtextarea').append('<h2>Title</h2>')
-    
-    let linesPerCol = 0;
+
+    let linesPerCol = 0
     if (fitScreen) {
       linesPerCol = Math.floor(alyric.lines.length / nofCols)
     } else {
@@ -125,7 +124,7 @@ function setText (alyric) {
         setFontSize(fontSize)
       }
     }
- 
+
     $('#textarea').css({ display: 'none', visibility: 'visible' })
     $('#textarea').fadeIn()
   })
@@ -135,7 +134,7 @@ function isOverflow (area) {
   return $(area).height() > 0.90 * $(window).height()
 }
 
-function addLine(col, line) {
+function addLine (col, line) {
   if (line.length === 0) { line = '&nbsp;' }
   $('#textarea .col' + col).append('<p>' + line + '</p>')
 }
