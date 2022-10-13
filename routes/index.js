@@ -9,8 +9,8 @@ exports.index = function (req, res, next) {
       fs.readFile(`./songs/${fileName}`, 'utf8', (err, data) => {
         count++
         if (err) {
-          console.error(err);
-          return;
+          console.error(err)
+          return
         }
         const lines = data.replace(/\r/g, '').split('\n')
         lyrics.push({
