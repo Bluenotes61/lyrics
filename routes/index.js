@@ -1,4 +1,16 @@
 const fs = require('fs')
+const categories = [
+  { slug: 'S', name: 'Svenska' },
+  { slug: 'P', name: 'Pop' },
+  { slug: 'R', name: 'Rock' },
+  { slug: 'V', name: 'Visor' },
+  { slug: 'L', name: 'Schlager' },
+  { slug: 'J', name: 'Jazz' },
+  { slug: 'M', name: 'Musikal' },
+  { slug: 'E', name: 'Ehlde' },
+  { slug: 'U', name: 'Soul' },
+  { slug: 'B', name: 'Blues' }
+]
 
 exports.index = function (req, res, next) {
   const lyrics = []
@@ -15,14 +27,16 @@ exports.index = function (req, res, next) {
         const lines = data.replace(/\r/g, '').split('\n')
         lyrics.push({
           title: lines[0].trim(),
-          lines: lines.slice(2)
+          categories: lines[1].trim(),
+          lines: lines.slice(3)
         })
         if (count === files.length) {
           lyrics.sort(function (a, b) {
             return (a.title > b.title ? 1 : -1)
           })
           res.render('index', {
-            lyrics: JSON.stringify(lyrics)
+            lyrics: JSON.stringify(lyrics),
+            categories: categories
           })
         }
       })

@@ -77,6 +77,15 @@ a {
   margin-right: 2%;
 }
 
+.categories {
+  margin-bottom: 20px;
+}
+.categories > div {
+  font-size:15px;
+  float: left;
+  margin-right: 10px;
+}
+
 @media (max-width: 400px) {
   .col {
     float: none;

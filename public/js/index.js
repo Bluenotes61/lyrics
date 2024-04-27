@@ -2,34 +2,27 @@
 
 var currsel = 0
 var fitScreen = false
+var filterLyrics = lyrics
+var nofrows = 0
 
 $(document).ready(function () {
-  var windowWidth = $(document).width()
+  $('.catcheck').prop('checked', true)
 
-  var songs = ''
-  for (var i = 0; i < lyrics.length; i++) {
-    songs += '<a href="javascript:void(0)" id="s' + i + '" class="onesong">' + lyrics[i].title + '</a>'
-  }
-
-  var nofcols = Math.floor(windowWidth / 300)
-  $('#selectarea').css('width', windowWidth - 40)
-  $('#songs').html(songs).tabulate({
-    nofcols: nofcols,
-    colmargin: 10
-  })
-  $('#songs .onesong').click(function () {
-    currsel = parseInt($(this).attr('id').substring(1))
-    showText()
-  })
-  $('#songs .onesong').focus(function () {
-    currsel = parseInt($(this).attr('id').substring(1))
+  $('.catcheck').click(function () {
+    applyFilter()
   })
 
-  var nofrows = $('#songs div:first-child').children('a').length
+  $('.catcheckall').click(function () {
+    const checked = !!$('.catcheckall:checked').length
+    $('.catcheck').prop('checked', checked)
+    applyFilter()
+  })
+
+  renderLyrics()
 
   $('body').keyup(function (e) {
     if ($('#selectarea').is(':visible')) {
-      if (e.keyCode === 40 && currsel < lyrics.length - 1) {
+      if (e.keyCode === 40 && currsel < filterLyrics.length - 1) {
         currsel++
         $('#s' + currsel).focus()
       } else if (e.keyCode === 38 && currsel > 0) {
@@ -38,7 +31,7 @@ $(document).ready(function () {
       } else if (e.keyCode === 37 && currsel > nofrows) {
         currsel -= nofrows
         $('#s' + currsel).focus()
-      } else if (e.keyCode === 39 && currsel < lyrics.length - nofrows - 1) {
+      } else if (e.keyCode === 39 && currsel < filterLrics.length - nofrows - 1) {
         currsel += nofrows
         $('#s' + currsel).focus()
       }
@@ -58,6 +51,42 @@ $(document).ready(function () {
   $('#s0').focus()
 })
 
+function applyFilter() {
+  const selCat = []
+  $('.catcheck:checked').each(function () {
+    selCat.push($(this).val());
+  })
+  filterLyrics = lyrics.filter(l => {
+    return l.categories.split('').some(c => selCat.includes(c))
+  })
+  renderLyrics()
+}
+  
+function renderLyrics() {
+  var windowWidth = $(document).width()
+
+  var songs = ''
+  for (var i = 0; i < filterLyrics.length; i++) {
+    songs += '<a href="javascript:void(0)" id="s' + i + '" class="onesong">' + filterLyrics[i].title + '</a>'
+  }
+
+  var nofcols = Math.floor(windowWidth / 300)
+  $('#selectarea').css('width', windowWidth - 40)
+  $('#songs').html(songs).tabulate({
+    nofcols: nofcols,
+    colmargin: 10
+  })
+  $('#songs .onesong').click(function () {
+    currsel = parseInt($(this).attr('id').substring(1))
+    showText()
+  })
+  $('#songs .onesong').focus(function () {
+    currsel = parseInt($(this).attr('id').substring(1))
+  })
+
+  nofrows = $('#songs div:first-child').children('a').length
+}
+
 function isFocused (a) {
   currsel = parseInt($(a).attr('id').substring(1))
 }
@@ -67,7 +96,7 @@ function itemClicked (a) {
 }
 
 function showText () {
-  setText(lyrics[currsel])
+  setText(filterLyrics[currsel])
 }
 
 function setText (alyric) {
