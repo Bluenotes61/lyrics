@@ -9,7 +9,8 @@ const categories = [
   { slug: 'M', name: 'Musikal' },
   { slug: 'E', name: 'Ehlde' },
   { slug: 'U', name: 'Soul' },
-  { slug: 'B', name: 'Blues' }
+  { slug: 'B', name: 'Blues' },
+  { slug: 'N', name: 'Barn' }
 ]
 
 exports.index = function (req, res, next) {
