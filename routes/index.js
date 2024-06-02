@@ -11,7 +11,7 @@ const categories = [
   { slug: 'U', name: 'Soul' },
   { slug: 'B', name: 'Blues' },
   { slug: 'N', name: 'Barn' },
-  { slug: 'A', name: 'Ella' }
+  { slug: 'A', name: 'Ella-låtar' }
 ]
 
 exports.index = function (req, res, next) {
