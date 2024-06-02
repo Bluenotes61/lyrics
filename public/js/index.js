@@ -6,7 +6,11 @@ var filterLyrics = lyrics
 var nofrows = 0
 
 $(document).ready(function () {
-  $('.catcheck').prop('checked', true)
+  //$('.catcheck').prop('checked', true)
+  $('.catcheck').prop('checked', false)
+  $('#checkall').prop('checked', false)
+  $('#A').prop('checked', true)
+  applyFilter()
 
   $('.catcheck').click(function () {
     applyFilter()
