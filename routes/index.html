@@ -14,15 +14,23 @@
   <body>
     <div id="selectarea">
       <h2>Allsång</h2>
-      <div class="categories clearfix">
-        <div>
-          <input class="catcheckall" type="checkbox" checked id="checkall"><label for="checkall">Alla</label>
+      <div class="menu clearfix">
+        <div class="menuitem">
+          <div class="menutext" id="cattoggle">Kategorier</div>
         </div>
-        {% for cat in categories %}
-          <div>
-            <input class="catcheck" type="checkbox" checked id="{{ cat.slug }}" value="{{ cat.slug }}"><label for="{{ cat.slug }}">{{ cat.name }}</label>
-          </div>
-        {% endfor %}
+        <div class="menuitem">
+          <div class="menutext" id="searchtoggle">Sök</div>
+        </div>
+        <div class="clearfix"></div>
+        <div id="categories" class="clearfix">
+          <div><input class="catcheckall" type="checkbox" checked id="checkall"><label for="checkall">Alla</label></div>
+          {% for cat in categories %}
+            <div><input class="catcheck" type="checkbox" checked id="{{ cat.slug }}" value="{{ cat.slug }}"><label for="{{ cat.slug }}">{{ cat.name }}</label></div>
+          {% endfor %}
+        </div>
+        <div id="search">
+          <div><input id="searchinput" type="text" placeholder="Titel / artist / text" /></div>
+        </div>
       </div>
       <div id="songs" class="clearfix"></div>
     </div>

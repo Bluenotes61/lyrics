@@ -10,8 +10,7 @@ const categories = [
   { slug: 'E', name: 'Ehlde' },
   { slug: 'U', name: 'Soul' },
   { slug: 'B', name: 'Blues' },
-  { slug: 'N', name: 'Barn' },
-  { slug: 'A', name: 'Ella-låtar' }
+  { slug: 'N', name: 'Barn' }
 ]
 
 exports.index = function (req, res, next) {
@@ -30,7 +29,8 @@ exports.index = function (req, res, next) {
         lyrics.push({
           title: lines[0].trim(),
           categories: lines[1].trim(),
-          lines: lines.slice(3)
+          artist: lines[2].trim(),
+          lines: lines.slice(4)
         })
         if (count === files.length) {
           lyrics.sort(function (a, b) {

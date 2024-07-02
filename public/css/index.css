@@ -77,14 +77,45 @@ a {
   margin-right: 2%;
 }
 
-.categories {
+.menu {
   margin-bottom: 20px;
 }
-.categories > div {
+.menuitem {
+  font-size:15px;
+  float: left;
+  margin-right: 20px;
+}
+.menutext {
+  font-size:20px;
+  color:blue;
+  margin: 0;
+  line-height: 150%;
+  cursor: pointer;
+}
+
+
+#categories {
+  border: solid 1px #ccc;
+  padding: 10px;
+  display: none;
+}
+#categories > div {
   font-size:15px;
   float: left;
   margin-right: 10px;
 }
+#search {
+  display: none;
+}
+#search input {
+  font-size: 20px;
+  padding: 5px;
+  width: 50%;
+}
+#search input:focus {
+  outline: none;
+}
+
 
 @media (max-width: 400px) {
   .col {

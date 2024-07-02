@@ -6,19 +6,29 @@ var filterLyrics = lyrics
 var nofrows = 0
 
 $(document).ready(function () {
-  //$('.catcheck').prop('checked', true)
-  $('.catcheck').prop('checked', false)
-  $('#checkall').prop('checked', false)
-  $('#A').prop('checked', true)
+  $('.catcheck').prop('checked', true)
   applyFilter()
 
   $('.catcheck').click(function () {
     applyFilter()
   })
 
+  $('#cattoggle').click(function () {
+    $('#categories').toggle()
+    $('#search').hide()
+  })  
+  $('#searchtoggle').click(function () {
+    $('#search').toggle()
+    $('#categories').hide()
+  })  
+
   $('.catcheckall').click(function () {
     const checked = !!$('.catcheckall:checked').length
     $('.catcheck').prop('checked', checked)
+    applyFilter()
+  })
+
+  $('#searchinput').keyup(function () {
     applyFilter()
   })
 
@@ -63,6 +73,15 @@ function applyFilter() {
   filterLyrics = lyrics.filter(l => {
     return l.categories.split('').some(c => selCat.includes(c))
   })
+  const s = $('#searchinput').val()
+  if ($('#searchinput').val().length > 0) {
+    const search = $('#searchinput').val().toLowerCase()
+    filterLyrics = filterLyrics.filter(l => {
+      return l.title.toLowerCase().includes(search) ||
+        l.artist.toLowerCase().includes(search) ||
+        l.lines.some(line => line.toLowerCase().includes(search))
+    })
+  }
   renderLyrics()
 }
   
@@ -81,6 +100,8 @@ function renderLyrics() {
     colmargin: 10
   })
   $('#songs .onesong').click(function () {
+    $('#categories').hide()
+    $('#search').hide()
     currsel = parseInt($(this).attr('id').substring(1))
     showText()
   })
