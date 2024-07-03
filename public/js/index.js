@@ -19,7 +19,9 @@ $(document).ready(function () {
   })  
   $('#searchtoggle').click(function () {
     $('#search').toggle()
+    $('#searchinput').focus().val('')
     $('#categories').hide()
+    applyFilter()
   })  
 
   $('.catcheckall').click(function () {
@@ -100,8 +102,6 @@ function renderLyrics() {
     colmargin: 10
   })
   $('#songs .onesong').click(function () {
-    $('#categories').hide()
-    $('#search').hide()
     currsel = parseInt($(this).attr('id').substring(1))
     showText()
   })
