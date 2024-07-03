@@ -16,6 +16,8 @@ $(document).ready(function () {
   $('#cattoggle').click(function () {
     $('#categories').toggle()
     $('#search').hide()
+    $('#searchinput').val('')
+    applyFilter()
   })  
   $('#searchtoggle').click(function () {
     $('#search').toggle()
@@ -68,20 +70,20 @@ $(document).ready(function () {
 })
 
 function applyFilter() {
-  const selCat = []
-  $('.catcheck:checked').each(function () {
-    selCat.push($(this).val());
-  })
-  filterLyrics = lyrics.filter(l => {
-    return l.categories.split('').some(c => selCat.includes(c))
-  })
-  const s = $('#searchinput').val()
   if ($('#searchinput').val().length > 0) {
     const search = $('#searchinput').val().toLowerCase()
-    filterLyrics = filterLyrics.filter(l => {
+    filterLyrics = lyrics.filter(l => {
       return l.title.toLowerCase().includes(search) ||
         l.artist.toLowerCase().includes(search) ||
         l.lines.some(line => line.toLowerCase().includes(search))
+    })
+  } else {
+    const selCat = []
+    $('.catcheck:checked').each(function () {
+      selCat.push($(this).val());
+    })
+    filterLyrics = lyrics.filter(l => {
+      return l.categories.split('').some(c => selCat.includes(c))
     })
   }
   renderLyrics()
