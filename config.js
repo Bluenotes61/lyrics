@@ -4,10 +4,10 @@
  */
 
 module.exports = {
-  serverport: 8188,
+  serverport: 8191,
 
   application: {
-    name: 'Singalong',
+    name: 'Singalong Joens',
     version: '0.2'
   }
 }
