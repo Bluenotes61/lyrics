@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />    
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <title>Allsång</title>
+    <link rel="stylesheet" type="text/css" href="/css/index.css" />
+    <script type="text/javascript" src="/js/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.tabulate.js"></script>
+    <script type="text/javascript" src="/js/q.js"></script>
+    <script>var lyrics = <%- lyrics %>;</script>
+    <script type="text/javascript" src="/js/index.js"></script>
+  </head>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2GSKBJJ1MB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-2GSKBJJ1MB');
+  </script>
+
+  <body>
+    <div id="selectarea">
+      <h2>Allsång</h2>
+      <div class="menu clearfix">
+        <div class="menuitem">
+          <div class="menutext" id="cattoggle">Kategorier</div>
+        </div>
+        <div class="menuitem">
+          <div class="menutext" id="searchtoggle">Sök</div>
+        </div>
+        <div class="clearfix"></div>
+        <div id="categories" class="clearfix">
+          <div><input class="catcheckall" type="checkbox" checked id="checkall"><label for="checkall">Alla</label></div>
+          <% categories.forEach(cat => { %>
+            <div><input class="catcheck" type="checkbox" checked id="<%= cat.slug %>" value="<%= cat.slug %>"><label for="<%= cat.slug %>"><%= cat.name %></label></div>
+          <% }) %>
+        </div>
+        <div id="search">
+          <div><input id="searchinput" type="text" placeholder="Titel / artist / text" /></div>
+        </div>
+      </div>
+      <div id="songs" class="clearfix"></div>
+    </div>
+    <div id="textarea">
+      <h2 class="title"></h2>
+      <div class="clearfix">
+        <div class="col col1"></div>
+        <div class="col col2"></div>
+        <div class="col col3"></div>
+      </div>
+    </div>
+    <div id="testtextarea"></div>
+  </body>
+</html>

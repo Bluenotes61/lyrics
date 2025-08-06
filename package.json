@@ -1,19 +1,23 @@
 {
   "name": "Lyrics",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": {
-    "name": "Magnus Ehlde, Postdoc AB",
-    "email": "magnus@patientbesked.se"
+    "name": "Magnus Ehlde",
+    "email": "magnus.ehlde@gmail.com"
   },
   "private": true,
   "scripts": {
-    "start": "nodemon app.js"
+    "dev": "nodemon app.ts"
   },
   "dependencies": {
-    "express": "^4.16.4",
-    "swig": "^1.4.2"
+    "dotenv": "^17.2.1",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "mongoose": "^8.16.1",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4"
+    "@types/express": "^5.0.3",
+    "nodemon": "^3.1.10"
   }
 }

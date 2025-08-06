@@ -1,8 +1,3 @@
-#config files should not be commited
-/config.js
-
-#node modules... no thank you!
+.enc
 node_modules
-
-#private files
 private
