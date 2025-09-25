@@ -1,13 +1,13 @@
 /**
- * Configuration parameters for database connection and application port
- * @module config
+ * Configuration parameters
  */
 
-module.exports = {
-  serverport: 8188,
+require('dotenv').config()
 
-  application: {
-    name: 'Singalong',
-    version: '0.2'
-  }
+const apiUri = process.env.API_PATH || '/localhost'
+const port = process.env.SERVER_PORT || 8080
+
+export default {
+  apiPath: `${apiUri}:${port}`,
+  serverPort: port
 }
