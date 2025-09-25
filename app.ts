@@ -14,7 +14,7 @@ const connectMongo = async () => {
   }
 }
 
-// connectMongo()
+connectMongo()
 
 const app = express()
 
