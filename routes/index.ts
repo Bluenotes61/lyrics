@@ -13,13 +13,20 @@ const categories = [
   { slug: 'N', name: 'Barn' }
 ]
 
-exports.index = function (req, res, next) {
-  const lyrics = []
-  fs.readdir('./songs', function (err, files) {
+type Lyric = {
+  title: string
+  categories: string
+  artist: string
+  lines: string[]
+}
+
+exports.index = function (req: any, res: any, next: any) {
+  const lyrics: Lyric[] = []
+  fs.readdir('./songs', function (err: any, files: string[]) {
     if (err) { return console.log('Unable to scan directory: ' + err) }
     let count = 0
     for (const fileName of files) {
-      fs.readFile(`./songs/${fileName}`, 'utf8', (err, data) => {
+      fs.readFile(`./songs/${fileName}`, 'utf8', (err: any, data: string) => {
         count++
         if (err) {
           console.error(err)

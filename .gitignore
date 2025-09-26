@@ -1,3 +1,4 @@
 .enc
 node_modules
 private
+dist
