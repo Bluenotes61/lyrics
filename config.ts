@@ -1,8 +1,10 @@
+
 /**
  * Configuration parameters
  */
 
-require('dotenv').config()
+// require('dotenv').config()
+import 'dotenv/config'
 
 const apiUri = process.env.API_PATH || '/localhost'
 const port = process.env.SERVER_PORT || 8080
