@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "lyrics",
+      name: "romresa",
       script: "dist/app.js",
       instances: 1,
       autorestart: true,
