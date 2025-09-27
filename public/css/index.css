@@ -79,6 +79,7 @@ a {
 
 .menu {
   margin-bottom: 20px;
+  display: none;
 }
 .menuitem {
   font-size:15px;
