@@ -36,6 +36,8 @@ $(document).ready(function () {
     applyFilter()
   })
 
+  $('#info').click(hideInfo)
+
   renderLyrics()
 
   $('body').keyup(function (e) {
@@ -68,6 +70,11 @@ $(document).ready(function () {
 
   $('#s0').focus()
 })
+
+function hideInfo() {
+  $('#info').fadeOut()
+  $('#selectarea').addClass('active')
+}
 
 function applyFilter() {
   if ($('#searchinput').val().length > 0) {
@@ -123,6 +130,7 @@ function itemClicked (a) {
 }
 
 function showText () {
+  hideInfo()
   setText(filterLyrics[currsel])
 }
 
